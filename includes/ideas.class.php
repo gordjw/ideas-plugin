@@ -121,12 +121,9 @@ class Ideas {
 		else
 			$post_id = $_POST['id'];
 
-		global $wpdb;
-		$current_votes = get_post_meta($post_id, 'votes', true);
+		$return = Ideas::change_votes( $post_id, 1 );
 
-		$current_votes = intval($current_votes) + 1;
-		update_post_meta( $post_id, 'votes', $current_votes );
-		echo $current_votes;
+		echo $return;
 		die(); // this is required to return a proper result
 	}
 
@@ -138,13 +135,63 @@ class Ideas {
 		else
 			$post_id = $_POST['id'];
 
-		global $wpdb;
-		$current_votes = get_post_meta($post_id, 'votes', true);
+		$return = Ideas::change_votes( $post_id, -1 );
 
-		$current_votes = intval($current_votes) - 1;
-		update_post_meta( $post_id, 'votes', $current_votes );
-		echo $current_votes;
+		echo $return;
 		die(); // this is required to return a proper result
+	}
+
+	// Voting is like a toggle switch, repeatedly hitting up will result in the vote being added then removed, then added...etc
+	static function change_votes( $post_id, $difference ) {
+		$votes = get_post_meta( $post_id, 'votes', true );
+		$voters = (array)get_post_meta( $post_id, 'voters', true );
+		$user_id = get_current_user_id();
+
+		$response_type = "alert";
+		$message = "You can only vote once";
+
+		if( array_key_exists( $user_id, $voters ) ) {
+			if( $voters[$user_id] == $difference ) {
+				// Already voted this way before
+
+				// Unvote
+				$votes = intval( $votes ) - $difference;
+
+				unset( $voters[$user_id] );
+
+				$message = "You've successfully withdrawn your vote";
+			} else {
+				// Already voted, but the other way
+
+				// 2 point turnaround
+				$votes = intval( $votes ) + (2 * $difference);
+
+				$voters[$user_id] = $difference;
+
+				$message = "Thanks for voting!";
+			}
+
+			update_post_meta( $post_id, 'votes', $votes );
+			update_post_meta( $post_id, 'voters', $voters );
+
+			$response_type = "success";
+		} else {
+			$votes = intval( $votes ) + $difference;
+			$voters[$user_id] = $difference;
+
+			update_post_meta( $post_id, 'votes', $votes );
+			update_post_meta( $post_id, 'voters', $voters );
+
+			$message = "Thanks for voting!";
+			$response_type = "success";
+		}
+		$return = array(
+			"votes"		=> $votes,
+			"message"	=> $message,
+			"result"	=> $response_type
+		);
+
+		return json_encode($return);
 	}
 
 	function voting_script() {

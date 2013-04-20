@@ -114,6 +114,9 @@ if ( defined( 'WPSEO_VERSION' ) ) {
     <?php responsive_header_end(); // after header container hook ?>
     
 	<?php responsive_wrapper(); // before wrapper container hook ?>
+	<div class="alerts">
+	</div>
+
     <div id="wrapper" class="clearfix">
 		<?php responsive_wrapper_top(); // before wrapper content hook ?>
 		<?php responsive_in_wrapper(); // wrapper hook ?>
