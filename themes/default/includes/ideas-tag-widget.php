@@ -1,12 +1,12 @@
 <?php 
 
-class IdeasCategoryWidget extends WP_Widget {
+class IdeasTagWidget extends WP_Widget {
 	
 	public function __construct() {
 		parent::__construct(
-	 		'ideas_category_widget', // Base ID
-			'Ideas_Category_Widget', // Name
-			array( 'description' => __( 'Ideas Categories', 'ideas-plugin' ), ) // Args
+	 		'ideas_tag_widget', // Base ID
+			'Ideas_Tag_Widget', // Name
+			array( 'description' => __( 'Ideas Tags', 'ideas-plugin' ), ) // Args
 		);
 	}
 
@@ -17,12 +17,12 @@ class IdeasCategoryWidget extends WP_Widget {
 			"hide_empty"	=> false,
 			"hierarchical"	=> false,
 		);
-		$sections = get_terms( "ideas_category", $args );
+		$sections = get_terms( "ideas_tag", $args );
 		?>
-		<div class="widget-wrapper widget_idea_sections">
-			<div class="widget-title">Sections</div>
+		<div class="widget-wrapper widget_idea_tags">
+			<div class="widget-title">Tags</div>
 			<?php if( empty( $sections ) ) {
-				echo "<p>Looks like you haven't created any sections yet! <a href='#'>Click here to add some.</a></p>";
+				echo "<p>Nobody's used any tags yet. :(</p>";
 			} else { ?>
 			<ul>
 				<?php foreach( $sections as $section ) { ?>

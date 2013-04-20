@@ -25,7 +25,33 @@ if ( !defined('ABSPATH')) exit;
 add_action('after_setup_theme', 'responsive_setup');
 
 require_once( 'ideas-category-widget.php' );
+require_once( 'ideas-tag-widget.php' );
 add_action( 'widgets_init', create_function( '', 'register_widget( "IdeasCategoryWidget" );' ) );
+add_action( 'widgets_init', create_function( '', 'register_widget( "IdeasTagWidget" );' ) );
+add_action( 'widgets_init', 'ideas_widgets_init' );
+
+
+/* Widget THIS */
+function ideas_widgets_init() {
+	$default_widgets = array (
+		'main-sidebar' => array(
+			'ideas_category_widget-2',
+			'ideas_tag_widget-2'
+		)
+	);
+
+	//delete_option('sidebars_widgets');
+	$sidebars = get_option( 'sidebars_widgets' );
+	//die(var_dump($sidebars));
+	$sidebars = array_merge( $sidebars, $default_widgets );
+	update_option( 'sidebars_widgets', $sidebars );
+}
+
+/* WIDGET'D (FIN)*/
+
+
+
+
 
 if (!function_exists('responsive_setup')):
 
