@@ -108,7 +108,40 @@ class Ideas {
 			'rewrite'	=> array( 'slug'	=> 'tag' ),
 		);
 
-		register_taxonomy( 'idea_tag', 'idea', $args );
+		register_taxonomy( 'ideas_tag', 'idea', $args );
+
+
+		$tax_labels = array(
+			'name'                         => _x( 'Sections', 'taxonomy general name' ),
+			'singular_name'                => _x( 'Section', 'taxonomy singular name' ),
+			'search_items'                 => __( 'Search Sections' ),
+			'popular_items'                => __( 'Popular Sections' ),
+			'all_items'                    => __( 'All Sections' ),
+			'parent_item'                  => null,
+			'parent_item_colon'            => null,
+			'edit_item'                    => __( 'Edit Section' ), 
+			'update_item'                  => __( 'Update Section' ),
+			'add_new_item'                 => __( 'Add New Section' ),
+			'new_item_name'                => __( 'New Section Name' ),
+			'separate_items_with_commas'   => __( 'Separate sections with commas' ),
+			'add_or_remove_items'          => __( 'Add or remove sections' ),
+			'choose_from_most_used'        => __( 'Choose from the most used sections' ),
+			'not_found'                    => __( 'No sections found.' ),
+			'menu_name'                    => __( 'Sections' )
+		);
+
+		$args = array(
+			'labels'	=> $tax_labels,
+			'hierarchical'	=> false,
+			'show_ui'	=> true,
+			'show_admin_column'	=> true,
+			'query_var'	=> true,
+			'rewrite'	=> array( 'slug'	=> 'section' ),
+		);
+
+		register_taxonomy( 'ideas_category', 'idea', $args );
+
+
 
 		flush_rewrite_rules();
 	}

@@ -321,7 +321,7 @@ msgstr ""
 #: includes/functions.php:383
 #, php-format
 msgid ""
-"<span class=\"%1$s\">Posted on </span>%2$s<span class=\"%3$s\"> by </span>"
+"<span class=\"%1$s\">Suggested on </span>%2$s<span class=\"%3$s\"> by </span>"
 "%4$s"
 msgstr ""
 

@@ -35,22 +35,28 @@ get_header(); ?>
                 <?php get_template_part( 'post-meta' ); ?>
 
                 <div class="post-entry">
-                	<a class="vote-up" data-id="<?php echo $id; ?>">Up</a>
-                	<a class="vote-down" data-id="<?php echo $id; ?>">Down</a>
-                	<p class="current-votes"><?php echo get_post_meta($id, "votes", true); ?></p>
-                    <?php the_content(__('Read more &#8250;', 'responsive')); ?>
-                    
-                    <?php if ( get_the_author_meta('description') != '' ) : ?>
-                    
-                    <div id="author-meta">
-                    <?php if (function_exists('get_avatar')) { echo get_avatar( get_the_author_meta('email'), '80' ); }?>
-                        <div class="about-author"><?php _e('About','responsive'); ?> <?php the_author_posts_link(); ?></div>
-                        <p><?php the_author_meta('description') ?></p>
-                    </div><!-- end of #author-meta -->
-                    
-                    <?php endif; // no description, no author's meta ?>
-                    
-                    <?php wp_link_pages(array('before' => '<div class="pagination">' . __('Pages:', 'responsive'), 'after' => '</div>')); ?>
+
+                	<div class="grid col-60">
+                		<a class="vote-up" data-id="<?php echo $id; ?>">Up</a>
+                		<p class="current-votes"><?php echo get_post_meta($id, "votes", true); ?></p>
+                		<a class="vote-down" data-id="<?php echo $id; ?>">Down</a>
+                	</div>
+
+                	<div class="grid col-780">
+	                    <?php the_content(__('Read more &#8250;', 'responsive')); ?>
+	                    
+	                    <?php if ( get_the_author_meta('description') != '' ) : ?>
+	                    
+	                    <div id="author-meta">
+	                    <?php if (function_exists('get_avatar')) { echo get_avatar( get_the_author_meta('email'), '80' ); }?>
+	                        <div class="about-author"><?php _e('About','responsive'); ?> <?php the_author_posts_link(); ?></div>
+	                        <p><?php the_author_meta('description') ?></p>
+	                    </div><!-- end of #author-meta -->
+	                    
+	                    <?php endif; // no description, no author's meta ?>
+	                    
+	                    <?php wp_link_pages(array('before' => '<div class="pagination">' . __('Pages:', 'responsive'), 'after' => '</div>')); ?>
+             		</div>
                 </div><!-- end of .post-entry -->
                 
                 <div class="navigation">

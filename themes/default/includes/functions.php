@@ -24,6 +24,9 @@ if ( !defined('ABSPATH')) exit;
  */
 add_action('after_setup_theme', 'responsive_setup');
 
+require_once( 'ideas-category-widget.php' );
+add_action( 'widgets_init', create_function( '', 'register_widget( "IdeasCategoryWidget" );' ) );
+
 if (!function_exists('responsive_setup')):
 
     function responsive_setup() {
@@ -411,7 +414,7 @@ add_action( 'widgets_init', 'responsive_remove_recent_comments_style' );
 if (!function_exists('responsive_post_meta_data')) :
 
 function responsive_post_meta_data() {
-	printf( __( '<span class="%1$s">Posted on </span>%2$s<span class="%3$s"> by </span>%4$s', 'responsive' ),
+	printf( __( '<span class="%1$s">Suggested on </span>%2$s<span class="%3$s"> by </span>%4$s', 'responsive' ),
 	'meta-prep meta-prep-author posted', 
 	sprintf( '<a href="%1$s" title="%2$s" rel="bookmark"><span class="timestamp">%3$s</span></a>',
 		esc_url( get_permalink() ),
@@ -787,4 +790,3 @@ function responsive_add_class( $classes ) {
 }
 
 add_filter( 'body_class','responsive_add_class' );
-?>
