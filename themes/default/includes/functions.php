@@ -192,6 +192,35 @@ endif;
  
 function responsive_fallback_menu() {
 	$args = array(
+		'show_option_all'    => '',
+		'orderby'            => 'name',
+		'order'              => 'ASC',
+		'style'              => 'list',
+		'show_count'         => 0,
+		'hide_empty'         => 1,
+		'use_desc_for_title' => 1,
+		'child_of'           => 0,
+		'feed'               => '',
+		'feed_type'          => '',
+		'feed_image'         => '',
+		'exclude'            => '',
+		'exclude_tree'       => '',
+		'include'            => '',
+		'hierarchical'       => 1,
+		'title_li'           => __( 'Categories' ),
+		'show_option_none'   => __('No categories'),
+		'number'             => null,
+		'echo'               => 1,
+		'depth'              => 0,
+		'current_category'   => 0,
+		'pad_counts'         => 0,
+		'taxonomy'           => 'idea_category',
+		'walker'             => null
+	);
+	$pages = wp_list_categories( $args );
+
+	
+	$args = array(
 		'depth'       => 0,
 		'sort_column' => 'menu_order, post_title',
 		'menu_class'  => 'menu',
@@ -203,6 +232,8 @@ function responsive_fallback_menu() {
 		'link_after'  => ''
 	);
 	$pages = wp_page_menu( $args );
+	
+
 	$prepend = '<div class="main-nav">';
 	$append = '</div>';
 	$output = $prepend.$pages.$append;

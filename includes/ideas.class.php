@@ -35,10 +35,17 @@ class Ideas {
 	}
 
 	function __construct() {
+		add_action( 'wp_enqueue_scripts', array( &$this, "enqueue_scripts" ) );
+
 		add_action( 'init', array( &$this, 'register_idea_post_type') );
-		add_action( 'wp_vote_up', array( &$this, 'vote_up' ) );
-		add_action( 'wp_vote_down', array( &$this, 'vote_down' ) );
-		add_action( 'admin_print_scripts', array( &$this, 'voting_script' ) );
+		add_action( 'wp_ajax_vote_up', array( &$this, 'vote_up' ) );
+		add_action( 'wp_ajax_vote_down', array( &$this, 'vote_down' ) );
+		add_action( 'wp_head', array( &$this, 'voting_script' ) );
+	}
+
+	function enqueue_scripts() {
+		wp_register_script( "voting", plugin_dir_url(dirname(__FILE__)) . "js/voting.js", array("jquery") );
+		wp_enqueue_script( "voting" );
 	}
 
 	function register_idea_post_type() {
@@ -101,34 +108,40 @@ class Ideas {
 			'rewrite'	=> array( 'slug'	=> 'tag' ),
 		);
 
-		register_taxonomy( 'idea_category', 'idea', $args );
+		register_taxonomy( 'idea_tag', 'idea', $args );
 
-		
+		flush_rewrite_rules();
 	}
 
 	function vote_up() {
+		check_ajax_referer( __FILE__, 'nonce', true );
+
 		if(! is_numeric( $_POST['id'] ) )
 			return false;
+		else
+			$post_id = $_POST['id'];
 
 		global $wpdb;
-		$current_votes = get_post_meta($post_id, 'votes', $single);
-		if( ! $current_votes )
-			$current_votes = 0;
-		$current_votes += 1;
+		$current_votes = get_post_meta($post_id, 'votes', true);
+
+		$current_votes = intval($current_votes) + 1;
 		update_post_meta( $post_id, 'votes', $current_votes );
 		echo $current_votes;
 		die(); // this is required to return a proper result
 	}
 
 	function vote_down() {
+		check_ajax_referer( __FILE__, 'nonce', true );
+
 		if(! is_numeric( $_POST['id'] ) )
 			return false;
+		else
+			$post_id = $_POST['id'];
 
 		global $wpdb;
-		$current_votes = get_post_meta($post_id, 'votes', $single);
-		if( ! $current_votes )
-			$current_votes = 0;
-		$current_votes -= 1;
+		$current_votes = get_post_meta($post_id, 'votes', true);
+
+		$current_votes = intval($current_votes) - 1;
 		update_post_meta( $post_id, 'votes', $current_votes );
 		echo $current_votes;
 		die(); // this is required to return a proper result
@@ -137,36 +150,8 @@ class Ideas {
 	function voting_script() {
 		?>
 <script type="text/javascript">
-jQuery(document).ready(function($) {
-
-	jQuery(".vote-up").click( function() {
-		var data = {
-			action: 'vote_up',
-			// Post ID
-			id: jQuery(this).attr('data-id')
-		};
-
-		jQuery.post(ajaxurl, data, function(response) {
-			if( response ) {
-				alert('New votes: ' + response);
-			}
-		});
-	});
-
-	jQuery(".vote-down").click( function() {
-		var data = {
-			action: 'vote_down',
-			// Post ID
-			id: jQuery(this).attr('data-id')
-		};
-
-		jQuery.post(ajaxurl, data, function(response) {
-			if( response ) {
-				alert('New votes: ' + response);
-			}
-		});
-	});
-});
+	var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+	var ajaxnonce = '<?php echo wp_create_nonce(__FILE__); ?>';
 </script>
 		<?php
 	}

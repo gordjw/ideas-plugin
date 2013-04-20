@@ -35,6 +35,9 @@ get_header(); ?>
                 <?php get_template_part( 'post-meta' ); ?>
 
                 <div class="post-entry">
+                	<a class="vote-up" data-id="<?php echo $id; ?>">Up</a>
+                	<a class="vote-down" data-id="<?php echo $id; ?>">Down</a>
+                	<p class="current-votes"><?php echo get_post_meta($id, "votes", true); ?></p>
                     <?php the_content(__('Read more &#8250;', 'responsive')); ?>
                     
                     <?php if ( get_the_author_meta('description') != '' ) : ?>
