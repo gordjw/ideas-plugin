@@ -150,40 +150,45 @@ class Ideas {
 		$response_type = "alert";
 		$message = "You can only vote once";
 
-		if( array_key_exists( $user_id, $voters ) ) {
-			if( $voters[$user_id] == $difference ) {
-				// Already voted this way before
+		if( $user_id == 0 ){
+			$message = "You need to log in to vote";
+		} else {
 
-				// Unvote
-				$votes = intval( $votes ) - $difference;
+			if( array_key_exists( $user_id, $voters ) ) {
+				if( $voters[$user_id] == $difference ) {
+					// Already voted this way before
 
-				unset( $voters[$user_id] );
+					// Unvote
+					$votes = intval( $votes ) - $difference;
 
-				$message = "You've successfully withdrawn your vote";
+					unset( $voters[$user_id] );
+
+					$message = "You've successfully withdrawn your vote";
+				} else {
+					// Already voted, but the other way
+
+					// 2 point turnaround
+					$votes = intval( $votes ) + (2 * $difference);
+
+					$voters[$user_id] = $difference;
+
+					$message = "Thanks for voting!";
+				}
+
+				update_post_meta( $post_id, 'votes', $votes );
+				update_post_meta( $post_id, 'voters', $voters );
+
+				$response_type = "success";
 			} else {
-				// Already voted, but the other way
-
-				// 2 point turnaround
-				$votes = intval( $votes ) + (2 * $difference);
-
+				$votes = intval( $votes ) + $difference;
 				$voters[$user_id] = $difference;
 
+				update_post_meta( $post_id, 'votes', $votes );
+				update_post_meta( $post_id, 'voters', $voters );
+
 				$message = "Thanks for voting!";
+				$response_type = "success";
 			}
-
-			update_post_meta( $post_id, 'votes', $votes );
-			update_post_meta( $post_id, 'voters', $voters );
-
-			$response_type = "success";
-		} else {
-			$votes = intval( $votes ) + $difference;
-			$voters[$user_id] = $difference;
-
-			update_post_meta( $post_id, 'votes', $votes );
-			update_post_meta( $post_id, 'voters', $voters );
-
-			$message = "Thanks for voting!";
-			$response_type = "success";
 		}
 		$return = array(
 			"votes"		=> $votes,

@@ -116,6 +116,8 @@ if ( defined( 'WPSEO_VERSION' ) ) {
 	<?php responsive_wrapper(); // before wrapper container hook ?>
 	<div class="alerts">
 	</div>
+	
+	<div><?php echo session_id(); ?></div>
 
     <div id="wrapper" class="clearfix">
 		<?php responsive_wrapper_top(); // before wrapper content hook ?>
