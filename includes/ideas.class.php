@@ -1,6 +1,18 @@
 <?php
 
 class Ideas {
+	function __construct() {
+		add_action( 'wp_enqueue_scripts', array( &$this, "enqueue_scripts" ) );
+
+		add_action( 'init', array( &$this, 'register_idea_post_type') );
+		add_action( 'wp_ajax_vote_up', array( &$this, 'vote_up' ) );
+		add_action( 'wp_ajax_vote_down', array( &$this, 'vote_down' ) );
+		add_action( 'wp_head', array( &$this, 'voting_script' ) );
+
+		add_action( 'wpmu_new_blog', array( 'Ideas', 'initialize_new_blog' ) );
+	}
+
+
 	static function activate() {
 		$theme_dir = get_theme_root();
 		$theme_path = $theme_dir . "/ideas-plugin-theme";
@@ -30,18 +42,17 @@ class Ideas {
 			die( "Couldn't write to " . $theme_dir . '. Ideas Plugin needs to install a theme to continue.' );
 		}
 
-		switch_theme('ideas-plugin-default', 'ideas-plugin-default');	
-
+		switch_theme('ideas-plugin-theme', 'ideas-plugin-theme');	
 	}
 
-	function __construct() {
-		add_action( 'wp_enqueue_scripts', array( &$this, "enqueue_scripts" ) );
+	static function initialize_new_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
+		switch_to_blog( $blog_id );
 
-		add_action( 'init', array( &$this, 'register_idea_post_type') );
-		add_action( 'wp_ajax_vote_up', array( &$this, 'vote_up' ) );
-		add_action( 'wp_ajax_vote_down', array( &$this, 'vote_down' ) );
-		add_action( 'wp_head', array( &$this, 'voting_script' ) );
+		switch_theme( 'ideas-plugin-theme', 'ideas-plugin-theme' );
+
+		restore_current_blog();
 	}
+
 
 	function enqueue_scripts() {
 		wp_register_script( "voting", plugin_dir_url(dirname(__FILE__)) . "js/voting.js", array("jquery") );
