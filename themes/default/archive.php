@@ -46,16 +46,27 @@ get_header(); ?>
 				<?php responsive_entry_top(); ?>
 
                 <?php get_template_part( 'post-meta' ); ?>
-                
-                <div class="post-entry">
-                    <?php if ( has_post_thumbnail()) : ?>
-                        <a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" >
-                    <?php the_post_thumbnail('thumbnail', array('class' => 'alignleft')); ?>
-                        </a>
-                    <?php endif; ?>
-                    <?php the_excerpt(); ?>
-                    <?php wp_link_pages(array('before' => '<div class="pagination">' . __('Pages:', 'responsive'), 'after' => '</div>')); ?>
-                </div><!-- end of .post-entry -->
+
+
+				<div class="grid col-60">
+            		<a class="vote-up" data-id="<?php echo $id; ?>">Up</a>
+            		<p class="current-votes"><?php echo get_post_meta($id, "votes", true); ?></p>
+            		<a class="vote-down" data-id="<?php echo $id; ?>">Down</a>
+				</div>
+
+				<div class="grid col-780">
+	                
+	                <div class="post-entry">
+	                    <?php if ( has_post_thumbnail()) : ?>
+	                        <a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" >
+	                    <?php the_post_thumbnail('thumbnail', array('class' => 'alignleft')); ?>
+	                        </a>
+	                    <?php endif; ?>
+	                    <?php the_excerpt(); ?>
+	                    <?php wp_link_pages(array('before' => '<div class="pagination">' . __('Pages:', 'responsive'), 'after' => '</div>')); ?>
+	                </div><!-- end of .post-entry -->
+
+	            </div>
                 
                 <?php get_template_part( 'post-data' ); ?>
 				               

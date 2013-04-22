@@ -160,7 +160,7 @@ class Ideas {
 	}
 
 	function vote_up() {
-		check_ajax_referer( __FILE__, 'nonce', true );
+		check_ajax_referer( "voting_nonce", 'nonce', true );
 
 		if(! is_numeric( $_POST['id'] ) )
 			return false;
@@ -174,7 +174,7 @@ class Ideas {
 	}
 
 	function vote_down() {
-		check_ajax_referer( __FILE__, 'nonce', true );
+		check_ajax_referer( "voting_nonce", 'nonce', true );
 
 		if(! is_numeric( $_POST['id'] ) )
 			return false;
@@ -196,46 +196,42 @@ class Ideas {
 		$response_type = "alert";
 		$message = "You can only vote once";
 
-		if( $user_id == 0 ){
-			$message = "You need to log in to vote";
-		} else {
+		if( array_key_exists( $user_id, $voters ) ) {
+			if( $voters[$user_id] == $difference ) {
+				// Already voted this way before
 
-			if( array_key_exists( $user_id, $voters ) ) {
-				if( $voters[$user_id] == $difference ) {
-					// Already voted this way before
+				// Unvote
+				$votes = intval( $votes ) - $difference;
 
-					// Unvote
-					$votes = intval( $votes ) - $difference;
+				unset( $voters[$user_id] );
 
-					unset( $voters[$user_id] );
-
-					$message = "You've successfully withdrawn your vote";
-				} else {
-					// Already voted, but the other way
-
-					// 2 point turnaround
-					$votes = intval( $votes ) + (2 * $difference);
-
-					$voters[$user_id] = $difference;
-
-					$message = "Thanks for voting!";
-				}
-
-				update_post_meta( $post_id, 'votes', $votes );
-				update_post_meta( $post_id, 'voters', $voters );
-
-				$response_type = "success";
+				$message = "You've successfully withdrawn your vote";
 			} else {
-				$votes = intval( $votes ) + $difference;
+				// Already voted, but the other way
+
+				// 2 point turnaround
+				$votes = intval( $votes ) + (2 * $difference);
+
 				$voters[$user_id] = $difference;
 
-				update_post_meta( $post_id, 'votes', $votes );
-				update_post_meta( $post_id, 'voters', $voters );
-
 				$message = "Thanks for voting!";
-				$response_type = "success";
 			}
+
+			update_post_meta( $post_id, 'votes', $votes );
+			update_post_meta( $post_id, 'voters', $voters );
+
+			$response_type = "success";
+		} else {
+			$votes = intval( $votes ) + $difference;
+			$voters[$user_id] = $difference;
+
+			update_post_meta( $post_id, 'votes', $votes );
+			update_post_meta( $post_id, 'voters', $voters );
+
+			$message = "Thanks for voting!";
+			$response_type = "success";
 		}
+		
 		$return = array(
 			"votes"		=> $votes,
 			"message"	=> $message,
@@ -249,7 +245,7 @@ class Ideas {
 		?>
 <script type="text/javascript">
 	var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
-	var ajaxnonce = '<?php echo wp_create_nonce(__FILE__); ?>';
+	var ajaxnonce = '<?php echo wp_create_nonce("voting_nonce"); ?>';
 </script>
 		<?php
 	}
