@@ -10,6 +10,8 @@ class Ideas {
 		add_action( 'wp_head', array( &$this, 'voting_script' ) );
 
 		add_action( 'wpmu_new_blog', array( 'Ideas', 'initialize_new_blog' ) );
+
+		add_action( 'publish_idea', array( &$this, 'initialize_new_post' ) );
 	}
 
 
@@ -250,5 +252,13 @@ class Ideas {
 	var ajaxnonce = '<?php echo wp_create_nonce(__FILE__); ?>';
 </script>
 		<?php
+	}
+
+	function initialize_new_post($post_id) {
+		$votes = get_post_meta( $post_id, 'votes', true );
+		if( empty( $votes ) ) {
+			update_post_meta( $post_id, 'votes', 0 );
+			update_post_meta( $post_id, 'voters', array() );
+		}
 	}
 }
